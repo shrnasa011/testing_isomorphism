@@ -3,6 +3,7 @@ import unittest
 from gi_lab.algorithms import ColorRefinement, TwoWL
 from gi_lab.exact import is_isomorphic
 from gi_lab.families import cycle, disjoint_cycles, permuted, rook_graph, shrikhande_graph
+from gi_lab.graph import Graph
 from gi_lab.search import find_collision
 
 
@@ -49,6 +50,26 @@ class WorkbenchTests(unittest.TestCase):
             connected_only=True,
         ))
 
+    def test_erdos_search_accepts_expected_average_degree(self):
+        algorithm = ColorRefinement()
+        by_probability = find_collision(
+            algorithm, vertices=10, model="erdos", probability=0.5,
+            samples=10, seed=19,
+        )
+        by_average_degree = find_collision(
+            algorithm, vertices=10, model="erdos", average_degree=4.5,
+            samples=10, seed=19,
+        )
+        self.assertEqual(by_average_degree, by_probability)
+
+    def test_erdos_average_degree_validation(self):
+        algorithm = ColorRefinement()
+        with self.assertRaisesRegex(ValueError, "vertices - 1"):
+            find_collision(algorithm, vertices=5, model="erdos", average_degree=5,
+                           samples=1, seed=0)
+        with self.assertRaisesRegex(ValueError, "only available"):
+            find_collision(algorithm, vertices=5, model="regular", average_degree=2,
+                           samples=1, seed=0)
 
 
 if __name__ == "__main__":

@@ -86,5 +86,6 @@ class TwoWL:
 
 
 BUILTINS: dict[str, Invariant] = {
-    "1wl": ColorRefinement(), "2wl": TwoWL(),
+    "1wl": ColorRefinement(),
+    "2wl": TwoWL(),
 }
