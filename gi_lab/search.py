@@ -45,19 +45,6 @@ def _is_connected(graph: Graph) -> bool:
     return len(reached) == graph.order
 
 
-def _erdos_probability(
-    vertices: int, probability: float | None, average_degree: float | None,
-) -> float:
-    """Resolve either p or the expected average degree to an edge probability."""
-    if average_degree is not None:
-        if probability is not None:
-            raise ValueError("choose either probability or average_degree, not both")
-        if vertices < 2 or not 0 <= average_degree <= vertices - 1:
-            raise ValueError("average_degree must be between 0 and vertices - 1")
-        return average_degree / (vertices - 1)
-    return 0.5 if probability is None else probability
-
-
 @dataclass(frozen=True)
 class Collision:
     algorithm: str
@@ -85,10 +72,7 @@ def find_collision(
     """
     if model not in {"regular", "erdos"}:
         raise ValueError("model must be 'regular' or 'erdos'")
-    if model == "regular" and average_degree is not None:
-        raise ValueError("average_degree is only available with model='erdos'")
-    edge_probability = (_erdos_probability(vertices, probability, None)
-                        if model == "erdos" else None)
+    edge_probability = (0.5 if probability is None else probability) if model == "erdos" else None
     rng = random.Random(seed)
     buckets: dict[tuple, list[Graph]] = {}
     for index in range(1, samples + 1):
