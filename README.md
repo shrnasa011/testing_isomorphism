@@ -18,35 +18,20 @@ runner records enough information to explain a result.
   `Graph.from_edges(...)` construction API.
 - Pluggable `Invariant` protocol; add a new test without changing the runner.
 - 1-WL / colour refinement and 2-WL implementations, with round-by-round
-  certificates, plus a random-walk stationary-distribution invariant.
+  certificates.
 - A small exact backtracking oracle, intended to label generated counterexamples.
 - Manual and named adversarial graph families, including a classic 1-WL
   collision: the 4×4 rook graph versus the Shrikhande graph.
 - A reproducible corpus runner that reports true separations and false
   positives (collisions).
 
-The `stationary` algorithm uses the random walk on an undirected graph, whose
-degree-weighted stationary probability is `degree(v) / (2m)`. That remains a
-valid stationary distribution on disconnected graphs, though it is not unique
-across components; the algorithm picks this canonical degree-weighted choice
-(isolated vertices have zero mass). For an edgeless graph it uses the uniform
-distribution over vertices, and the empty graph has an empty distribution.
-The label-independent signature is the sorted list of `(degree, probability)`
-pairs, keeping each vertex's two values together. Since the probability is
-determined by degree and graph size, this still captures only the degree
-multiset. Different signatures rule out isomorphism, but matching signatures
-do not establish it (the rook and Shrikhande graphs both have the same pairs).
-
 ## Quick start
 
 ```bash
 python -m gi_lab list
 python -m gi_lab compare rook4 shrikhande --algorithms 1wl 2wl exact
-python -m gi_lab compare rook4 shrikhande --algorithms stationary exact
 python -m gi_lab corpus --algorithms 1wl 2wl --include-permutations
 python -m gi_lab find-collision --algorithm 1wl --model regular --vertices 10 --degree 2 --seed 7
-python -m gi_lab find-collision --algorithm stationary --model regular --vertices 16 --degree 6 --connected-only
-python -m gi_lab find-collision --algorithm stationary --model erdos --vertices 20 --average-degree 4 --connected-only
 python -m unittest discover -s tests -v
 ```
 
@@ -74,9 +59,7 @@ the result can be pasted directly into `Graph.from_edges(...)` and added to a
 manual regression case. Add `--connected-only` to skip disconnected samples
 when searching for collisions within individual connected components. The
 sample budget counts all generated graphs, including skipped disconnected
-ones. With `--model erdos`, choose either `--edge-probability p` or
-`--average-degree d`; the latter sets `p = d / (vertices - 1)`, so `d` is the
-expected average degree, not a guaranteed degree. The default random-regular
+ones. With `--model erdos`, set the edge probability with `--edge-probability p`. The default random-regular
 model is intentionally useful for finding 1-WL failures, because every
 sampled graph has the same initial degree colour. It is not evidence that a
 method is sound if a finite search does not find a collision.
