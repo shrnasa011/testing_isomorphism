@@ -59,8 +59,7 @@ the result can be pasted directly into `Graph.from_edges(...)` and added to a
 manual regression case. Add `--connected-only` to skip disconnected samples
 when searching for collisions within individual connected components. The
 sample budget counts all generated graphs, including skipped disconnected
-ones. With `--model erdos`, set the edge probability with `--edge-probability p`. The default random-regular
-model is intentionally useful for finding 1-WL failures, because every
+ones. With `--model erdos`, set the edge probability with `--edge-probability p`. The default random-regular model is intentionally useful for finding 1-WL failures, because every
 sampled graph has the same initial degree colour. It is not evidence that a
 method is sound if a finite search does not find a collision.
 
