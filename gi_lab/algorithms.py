@@ -85,34 +85,6 @@ class TwoWL:
         return RefinementResult(self.name, (graph.order, tuple(sorted(keys.values(), key=repr))), rounds, histogram)
 
 
-class StationaryDistribution:
-    """A canonical stationary distribution for an undirected graph.
-
-    When there is at least one edge, pi(v) = degree(v) / (2m) is stationary,
-    even if the graph is disconnected. For disconnected graphs, stationary
-    distributions are not unique; this chooses the canonical degree-weighted
-    one (isolated vertices receive zero mass). For an edgeless graph, choose
-    the uniform distribution. The signature sorts (degree, probability) pairs
-    to be independent of vertex labels. Equal signatures still do not capture
-    the graph's full structure.
-    """
-
-    name = "stationary"
-
-    def refine(self, graph: Graph) -> RefinementResult:
-        if graph.size == 0:
-            # The empty vector is the unique distribution on no vertices;
-            # otherwise use uniform mass for the edgeless graph's isolates.
-            vertex_data = (() if graph.order == 0 else
-                           tuple(sorted((0, 1 / graph.order) for _ in graph.vertices)))
-        else:
-            vertex_data = tuple(sorted((graph.degree(v), graph.degree(v) / (2 * graph.size))
-                                        for v in graph.vertices))
-        return RefinementResult(self.name, (graph.order, vertex_data), 1,
-                                tuple(sorted(Counter(vertex_data).values())))
-
-
 BUILTINS: dict[str, Invariant] = {
     "1wl": ColorRefinement(), "2wl": TwoWL(),
-    "stationary": StationaryDistribution(),
 }
