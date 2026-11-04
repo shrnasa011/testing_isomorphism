@@ -63,7 +63,6 @@ def main() -> None:
         collision = find_collision(BUILTINS[args.algorithm], vertices=args.vertices,
                                    samples=args.samples, seed=args.seed, model=args.model,
                                    degree=args.degree, probability=args.edge_probability,
-                                   average_degree=args.average_degree,
                                    connected_only=args.connected_only)
         print(json.dumps(None if collision is None else collision.reproduce(), indent=2))
         return
