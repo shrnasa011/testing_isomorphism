@@ -75,7 +75,7 @@ class Collision:
 def find_collision(
     algorithm: Invariant, *, vertices: int, samples: int, seed: int,
     model: str = "regular", degree: int = 2, probability: float | None = None,
-    average_degree: float | None = None, connected_only: bool = False,
+    connected_only: bool = False,
 ) -> Collision | None:
     """Find a non-isomorphic signature collision, or return None within the budget.
 
@@ -87,7 +87,7 @@ def find_collision(
         raise ValueError("model must be 'regular' or 'erdos'")
     if model == "regular" and average_degree is not None:
         raise ValueError("average_degree is only available with model='erdos'")
-    edge_probability = (_erdos_probability(vertices, probability, average_degree)
+    edge_probability = (_erdos_probability(vertices, probability, None)
                         if model == "erdos" else None)
     rng = random.Random(seed)
     buckets: dict[tuple, list[Graph]] = {}
